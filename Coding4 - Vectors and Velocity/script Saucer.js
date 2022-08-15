@@ -5,10 +5,7 @@ window.onload = function() {
         height = canvas.height = window.innerHeight,
         ship = particle.create(width / 2, height/ 2, 0, 0),
         thrust = vector.create(0, 0),
-        angle = 0,
-        turningLeft = false,
-        turningRight = false,
-        thrusting = false
+        angle = 0
 
 
     update()
@@ -16,14 +13,18 @@ window.onload = function() {
     document.body.addEventListener("keydown", function(event) {
         switch(event.keyCode) {
             case 38:
-                thrusting = true
+                thrust.setY(-0.1)
                 break
+            case 40:
+                thrust.setY(0.1)
+                break
+
             case 37:
-                turningLeft = true
+                thrust.setX(-0.1)
                 break
 
             case 39:
-                turningRight = true
+                thrust.setX(0.1)
                 break
 
             default:
@@ -34,14 +35,18 @@ window.onload = function() {
     document.body.addEventListener("keyup", function(event) {
         switch(event.keyCode) {
             case 38:
-                thrusting = false
+                thrust.setY(0)
                 break
+            case 40:
+                thrust.setY(0)
+                break
+
             case 37:
-                turningLeft = false
+                thrust.setX(0)
                 break
 
             case 39:
-                turningRight = false
+                thrust.setX(0)
                 break
 
             default:
@@ -52,21 +57,6 @@ window.onload = function() {
 
     function update() {
         context.clearRect(0, 0, width, height)
-
-        if(turningLeft) {
-            angle -= 0.05
-        }
-        if(turningRight) {
-            angle += 0.05
-        }
-        thrust.setAngle(angle)
-
-        if(thrusting) {
-            thrust.setLength(0.1)
-        } else {
-            thrust.setLength(0)
-        }
-
 
         ship.accelerate(thrust)
         ship.update()
@@ -80,11 +70,6 @@ window.onload = function() {
         context.lineTo(-10, -7)
         context.lineTo(-10, 7)
         context.lineTo(10, 0)
-        if(thrusting) {
-            context.moveTo(-10, 5)
-            context.lineTo(-18, 0)
-            context.lineTo(-10, -5)
-        }
         context.stroke()
 
         context.restore()
