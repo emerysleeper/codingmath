@@ -3,6 +3,7 @@ let particle = {
     velocity: null,
     gravity: null,
     mass: 1,
+    radius: 0,
 
     create: function(x, y, speed, direction, grav) {
         let obj = Object.create(this)

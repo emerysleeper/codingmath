@@ -39,6 +39,8 @@ window.onload = function() {
         context.arc(p.position.getX(), p.position.getY(), 10, 0, Math.PI * 6, false)
         context.fill()
 
+
+
         requestAnimationFrame(update)
     }
 }
