@@ -7,11 +7,50 @@ window.onload = function() {
             x: 100,
             y: height,
             angle: -Math.PI/4
-        }
+        },
+        cannonball = particle.create(gun.x, gun.y, 15, gun.angle, 0.2),
+        canShoot = true
+
+    cannonball.radius = 7
 
     draw()
 
     document.body.addEventListener('mousedown', onMouseDown)
+
+    document.body.addEventListener('keyup', function(event) {
+        switch(event.keyCode) {
+            case 32: //space
+                if(canShoot) {
+                    shoot()
+                }
+                break
+
+            default:
+                break
+        }
+    })
+
+    function shoot() {
+        console.log(cannonball.gravity)
+        cannonball.position.setX(gun.x + Math.cos(gun.angle) * 40)
+        cannonball.position.setY(gun.y + Math.sin(gun.angle) * 40)
+        cannonball.velocity.setLength(15)
+        cannonball.velocity.setAngle(gun.angle)
+        canShoot = false
+        update()
+    }
+
+    function update() {
+        cannonball.update()
+        draw()
+
+        if(cannonball.position.getY() > height) {
+            canShoot = true
+        }
+        else {
+            requestAnimationFrame(update)
+        }
+    }
 
     function onMouseDown(event) {
         document.body.addEventListener("mousemove", onMouseMove)
@@ -47,6 +86,14 @@ window.onload = function() {
         context.rotate(gun.angle)
         context.fillRect(0, -8, 40, 16)
         context.restore()
+
+        context.beginPath()
+        context.arc(cannonball.position.getX(),
+            cannonball.position.getY(),
+            cannonball.radius,
+            0, Math.PI * 2, false
+            )
+        context.fill()
     }
 
 

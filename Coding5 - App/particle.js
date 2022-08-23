@@ -6,6 +6,7 @@ let particle = {
     radius: 0,
 
     create: function(x, y, speed, direction, grav) {
+        console.log('particle created')
         let obj = Object.create(this)
         obj.position = vector.create(x, y)
         obj.velocity = vector.create(0, 0)
@@ -17,6 +18,7 @@ let particle = {
 
     update: function() {
         this.position.addTo(this.velocity)
+        this.accelerate(this.gravity)
     },
 
     accelerate: function(accel) {
