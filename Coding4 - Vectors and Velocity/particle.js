@@ -4,6 +4,7 @@ let particle = {
     gravity: null,
     mass: 1,
     radius: 0,
+    friction: 0.999,
 
     create: function(x, y, speed, direction, grav) {
         let obj = Object.create(this)
@@ -16,6 +17,8 @@ let particle = {
     },
 
     update: function() {
+        this.velocity.multiplyBy(this.friction)
+        this.velocity.addTo(this.gravity)
         this.position.addTo(this.velocity)
     },
 
