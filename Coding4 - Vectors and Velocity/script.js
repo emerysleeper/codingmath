@@ -1,59 +1,113 @@
-// let v1 = vector.create(10, 5)
-// let v2 = vector.create(3, 4)
-// let v3 = v1.add(v2)
-
 window.onload = function() {
-    let canvas = document.querySelector('#canvas'),
+    let canvas = document.getElementById('canvas'),
         context = canvas.getContext('2d'),
         width = canvas.width = window.innerWidth,
-        height = canvas.height = window.innerHeight
-        p = particle.create(width / 2, height / 2, 15, Math.random() * Math.PI * 2)
-        // friction = vector.create(0.15, 0)
-        // friction = 0.97
-
-
-    p.radius = 20
-
+        height = canvas.height = window.innerHeight,
+        ship = particle.create(width / 2, height/ 2, 0, 0),
+        thrust = vector.create(0, 0),
+        angle = 0,
+        turningLeft = false,
+        turningRight = false,
+        thrusting = false
 
 
     update()
 
+    document.body.addEventListener("keydown", function(event) {
+        switch(event.keyCode) {
+            case 38:
+                thrusting = true
+                break
+            case 37:
+                turningLeft = true
+                break
+
+            case 39:
+                turningRight = true
+                break
+
+            default:
+                break
+        }
+    })
+
+    document.body.addEventListener("keyup", function(event) {
+        switch(event.keyCode) {
+            case 38:
+                thrusting = false
+                break
+            case 37:
+                turningLeft = false
+                break
+
+            case 39:
+                turningRight = false
+                break
+
+            default:
+                break
+        }
+    })
+
+
     function update() {
         context.clearRect(0, 0, width, height)
 
-        // friction.setAngle(p.velocity.getAngle())
-        //
-        // if(p.velocity.getLength() > friction.getLength()) {
-        //     p.velocity.subtractFrom(friction)
-        // } else {
-        //     p.velocity.setLength(0)
-        // }
+        if(turningLeft) {
+            angle -= 0.05
+        }
+        if(turningRight) {
+            angle += 0.05
+        }
+        thrust.setAngle(angle)
 
-        // p.velocity.multiplyBy(friction)
+        if(thrusting) {
+            thrust.setLength(0.1)
+        } else {
+            thrust.setLength(0)
+        }
 
-        p.update()
 
+        ship.accelerate(thrust)
+        ship.update()
+
+        context.save()
+        context.translate(ship.position.getX(), ship.position.getY())
+        context.rotate(angle)
 
         context.beginPath()
-        context.arc(p.position.getX(), p.position.getY(), p.radius, 0, Math.PI * 2, false)
-        context.fill()
+        context.moveTo(10, 0)
+        context.lineTo(-10, -7)
+        context.lineTo(-10, 7)
+        context.lineTo(10, 0)
+        if(thrusting) {
+            context.moveTo(-10, 5)
+            context.lineTo(-18, 0)
+            context.lineTo(-10, -5)
+        }
+        context.stroke()
 
-        if(p.position.getX() - p.radius > width) {
-            p.position.setX( -p.radius)
+        context.restore()
+
+        // context.beginPath()
+        // context.arc(ship.position.getX(), ship.position.getY(), 10, 0, Math.PI * 6, false)
+        // context.fill()
+
+        if(ship.position.getX() > width) {
+            ship.position.setX(0)
         }
 
-        if(p.position.getX() +  p.radius< 0) {
-            p.position.setX(width  + p.radius)
+        if(ship.position.getX() < 0) {
+            ship.position.setX(width)
         }
 
-        if(p.position.getY()  - p.radius > height) {
-            p.position.setY(-p.radius)
+        if(ship.position.getY() > height) {
+            ship.position.setY(0)
         }
 
-        if(p.position.getY() + p.radius < 0) {
-            p.position.setY(height + p.radius)
+        if(ship.position.getY() < 0) {
+            ship.position.setY(height)
         }
-
 
         requestAnimationFrame(update)
     }
